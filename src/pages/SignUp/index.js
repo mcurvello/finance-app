@@ -1,29 +1,33 @@
 import React, { useState } from "react";
-import { Platform } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 
 import {
   AreaInput,
   Background,
   Container,
   Input,
-  Link,
-  LinkText,
   Logo,
   SubmitButton,
   SubmitText,
 } from "./styles";
+import { Platform } from "react-native";
 
-export default function SignIn() {
-  const navigation = useNavigation();
-
+export default function SignUp() {
+  const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   return (
     <Background>
       <Container behavior={Platform.OS === "ios" ? "padding" : ""}>
-        <Logo source={require("../../assets/Logo.png")} />
+        <AreaInput>
+          <Input
+            placeholder="Nome"
+            autoCorrect={false}
+            autoCapitalize="none"
+            value={nome}
+            onChangeText={(text) => setNome(text)}
+          />
+        </AreaInput>
 
         <AreaInput>
           <Input
@@ -46,12 +50,8 @@ export default function SignIn() {
         </AreaInput>
 
         <SubmitButton>
-          <SubmitText>Acessar</SubmitText>
+          <SubmitText>Cadastrar</SubmitText>
         </SubmitButton>
-
-        <Link onPress={() => navigation.navigate("SignUp")}>
-          <LinkText>Criar uma conta!</LinkText>
-        </Link>
       </Container>
     </Background>
   );
