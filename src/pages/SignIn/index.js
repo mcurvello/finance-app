@@ -1,10 +1,55 @@
-import { View, Text } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+
+import {
+  AreaInput,
+  Background,
+  Container,
+  Input,
+  Link,
+  LinkText,
+  Logo,
+  SubmitButton,
+  SubmitText,
+} from "./styles";
+import { Platform } from "react-native";
 
 export default function SignIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   return (
-    <View>
-      <Text>SignIn</Text>
-    </View>
+    <Background>
+      <Container behavior={Platform.OS === "ios" ? "padding" : ""}>
+        <Logo source={require("../../assets/Logo.png")} />
+
+        <AreaInput>
+          <Input
+            placeholder="Email"
+            autoCorrect={false}
+            autoCapitalize="none"
+            value={email}
+            onChangeText={(text) => setEmail(text)}
+          />
+        </AreaInput>
+
+        <AreaInput>
+          <Input
+            placeholder="Senha"
+            autoCorrect={false}
+            autoCapitalize="none"
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+          />
+        </AreaInput>
+
+        <SubmitButton>
+          <SubmitText>Acessar</SubmitText>
+        </SubmitButton>
+
+        <Link>
+          <LinkText>Criar uma conta!</LinkText>
+        </Link>
+      </Container>
+    </Background>
   );
 }
