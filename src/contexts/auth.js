@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { useState, createContext, useEffect } from "react";
 import firebase from "../services/firebaseConnection";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -16,8 +16,10 @@ function AuthProvider({ children }) {
         setUser(JSON.parse(storageUser));
         setLoading(false);
       }
+
       setLoading(false);
     }
+
     loadStorage();
   }, []);
 
@@ -42,7 +44,7 @@ function AuthProvider({ children }) {
             storageUser(data);
           });
       })
-      .catch(() => {
+      .catch((error) => {
         alert(error.code);
       });
   }
@@ -57,18 +59,21 @@ function AuthProvider({ children }) {
           .database()
           .ref("users")
           .child(uid)
-          .set({ saldo: 0, nome: nome });
-        then(() => {
-          let data = {
-            uid: uid,
+          .set({
+            saldo: 0,
             nome: nome,
-            email: value.user.email,
-          };
-          setUser(data);
-          storageUser(data);
-        });
+          })
+          .then(() => {
+            let data = {
+              uid: uid,
+              nome: nome,
+              email: value.user.email,
+            };
+            setUser(data);
+            storageUser(data);
+          });
       })
-      .catch(() => {
+      .catch((error) => {
         alert(error.code);
       });
   }
