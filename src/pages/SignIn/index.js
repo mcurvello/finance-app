@@ -20,7 +20,11 @@ export default function SignIn() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { user } = useContext(AuthContext);
+  const { signIn } = useContext(AuthContext);
+
+  function handleLogin() {
+    signIn(email, password);
+  }
 
   return (
     <Background>
@@ -47,7 +51,7 @@ export default function SignIn() {
           />
         </AreaInput>
 
-        <SubmitButton>
+        <SubmitButton onPress={handleLogin}>
           <SubmitText>Acessar</SubmitText>
         </SubmitButton>
 
