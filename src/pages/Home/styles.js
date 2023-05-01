@@ -30,7 +30,7 @@ export const Title = styled.Text`
 `;
 
 export const List = styled.FlatList.attrs({
-  paddingHorizontal: 15,
+  marginHorizontal: 15,
 })`
   padding-top: 15px;
   background-color: #fff;
