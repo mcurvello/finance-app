@@ -5,7 +5,8 @@ import Header from "../../components/Header";
 
 import { Background, Balance, Container, List, Name, Title } from "./styles";
 import HistoryList from "../../components/HistoryList";
-import { format } from "date-fns";
+import { format, isPast } from "date-fns";
+import { Alert } from "react-native";
 
 export default function Home() {
   const [history, setHistory] = useState([]);
@@ -37,6 +38,7 @@ export default function Home() {
               key: childItem.key,
               tipo: childItem.val().tipo,
               valor: childItem.val().valor,
+              date: childItem.val().date,
             };
 
             setHistory((oldArray) => [...oldArray, list].reverse());
@@ -45,6 +47,55 @@ export default function Home() {
     }
     loadList();
   }, []);
+
+  function handleDelete(data) {
+    if (isPast(new Date(data.date))) {
+      alert("Você não pode excluir um registro antigo!");
+      return;
+    }
+
+    Alert.alert(
+      "Cuidado, atenção",
+      `Você deseja excluir ${data.tipo} - Valor: R$ ${parseFloat(
+        data.valor
+      ).toFixed(2)}`,
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Deletar",
+          onPress: () => handleDeleteSuccess(data),
+        },
+      ]
+    );
+  }
+
+  async function handleDeleteSuccess(data) {
+    await firebase
+      .database()
+      .ref("history")
+      .child(uid)
+      .child(data.key)
+      .remove()
+      .then(async () => {
+        let actualBalance = balance;
+        data.tipo === "despesa"
+          ? (actualBalance += parseFloat(data.valor))
+          : (actualBalance -= parseFloat(data.valor));
+
+        await firebase
+          .database()
+          .ref("users")
+          .child(uid)
+          .child("saldo")
+          .set(actualBalance);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   return (
     <Background>
@@ -60,7 +111,9 @@ export default function Home() {
         showsVerticalScrollIndicator={false}
         data={history}
         keyExtractor={(item) => item.key}
-        renderItem={({ item }) => <HistoryList data={item} />}
+        renderItem={({ item }) => (
+          <HistoryList data={item} deleteItem={handleDelete} />
+        )}
       />
     </Background>
   );
